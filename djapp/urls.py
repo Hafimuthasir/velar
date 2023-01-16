@@ -29,7 +29,7 @@ urlpatterns = [
 
     path('dummyPurchase',dummyPurchase,name='dummyPurchase'),
     path('DownloadFile/<str:filename>',DownloadFile,name='DownloadFile'),
-    path('GetTestData',GetTestData,name='GetTestData'),
+    path('searchusers/<str:search>',searchUsers,name='searchUsers'),
     path('addDownloadsCount',addDownloadsCount.as_view(),name='addDownloadsCount'),
 
     path ('GetExplorePosts/<str:section>',GetExplorePosts.as_view(),name='GetExplorePosts'),

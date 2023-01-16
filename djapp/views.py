@@ -84,6 +84,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         # Add custom claims
+        
         token['name'] = user.first_name
         token['is_admin'] = user.is_admin
         if user.profile:
@@ -341,8 +342,10 @@ class GetAllSearch(APIView):
 
 
 @api_view(['GET'])
-def GetTestData(request):
-    return Response('done')
+def searchUsers(request,search):
+    users = User.objects.filter(first_name__icontains=search)|User.objects.filter(last_name__icontains=search)
+    serializer = UserSerializers(users,many=True)
+    return Response(serializer.data)
         # return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -351,5 +354,7 @@ class GetTrendingDownloads(APIView):
         data = Posts.objects.filter(is_z=True).order_by('-downloadsCount')
         serializer = PostSerializer(data,many=True)
         return Response(serializer.data)
+
+
 
         

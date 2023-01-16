@@ -36,5 +36,6 @@ class MessageSerializer(serializers.ModelSerializer):
         model=Chat
         fields = '__all__'
 
+
     # def get_ownername(self,user):
     #     return user.owner.first_name
