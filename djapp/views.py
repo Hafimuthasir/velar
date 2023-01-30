@@ -13,6 +13,7 @@ from django.core.files import File
 from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework import status
+from djapp.task import celeryusing
 # Create your views here.
 
 
@@ -22,22 +23,25 @@ def getRoutes(request):
         '/api/token',
         '/api/token/refresh'
     ]  
-    
     return Response(routes)
    
 
 @api_view(['POST'])
 def register(request):
-  
         email = request.data.get('email')
-        print ('j',email)
+        username = request.data.get('first_name')
+        print ('j',email,username)
+        
         checkem=User.objects.filter(email=email)
         if checkem:
+            print('lllllllllolllllllll')
             return Response('Email already exist')
         else:
+            print('haiiiiiiiiiiii')
             serializer = UserSerializers(data=request.data,partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
+            celeryusing.delay(email,username)
             return Response(200)
 
 # @api_view(['POST'])
@@ -87,6 +91,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         
         token['name'] = user.first_name
         token['is_admin'] = user.is_admin
+        token['is_bussiness'] = user.is_bussiness
+        token['is_verified'] = user.is_verified
         if user.profile:
             token['profile'] = user.profile.url
         else:
@@ -130,13 +136,7 @@ def feedPosts(request):
     print('lol in feed')
     allPost = Posts.objects.all().order_by('-id')
     serializer = PostSerializer(allPost,many=True)
-    print('hai')
 
-    # test = serializer.data
-    # mydict = {k: test(v).encode("utf-8") for k,v in mydict.iteritems()}
-    
-    # test2 = test.decode('utf-16')
-    # print(test2)
     return Response(serializer.data)
 
 @api_view(['GET'])
@@ -358,3 +358,42 @@ class GetTrendingDownloads(APIView):
 
 
         
+@api_view(['POST']) 
+def emailValidate(request):
+    token = request.data['id']
+    username = request.data['username']
+    try :
+        test = User.objects.get(first_name=username)
+        test.is_verified = True
+        test.save()
+        return Response('verified succesfully')
+    except:
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # print(test)
+    # print(username)
+    # if token is not None:
+    #     ts = User.objects.get(first_name = username)
+    #     ts.is_verfied = True
+    #     ts.save()
+    #     return Response(200) 
+    # else:
+    #     return Response(400)
+
+@api_view(['GET']) 
+def GetTestData(request):
+    use = User.objects.get(id=1)
+    print(use)
+    use.is_bussiness = True
+    use.save()
+    return Response(200)
+
+
+@api_view(['POST'])
+def celeryverify(request):
+    email = request.data.get('email')
+    user = User.objects.get(email=email)
+    username = user.first_name
+    print(email,username)
+    celeryusing.delay(email,username)
+    return Response(200)

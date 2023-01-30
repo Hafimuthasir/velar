@@ -8,5 +8,6 @@ class admins(models.Model):
     
 class PostReports(models.Model):
     post = models.ForeignKey(Posts,on_delete=models.CASCADE)
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
     
+class BussinessRequest(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='usse')

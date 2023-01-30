@@ -49,9 +49,11 @@ class User(AbstractBaseUser):
     last_login      = models.DateTimeField(auto_now_add=True,null=True)
     is_admin        = models.BooleanField(default=False)
     is_staff        = models.BooleanField(default=False)
-    is_active        = models.BooleanField(default=True)
-    is_superadmin    = models.BooleanField(default=False)
+    is_active       = models.BooleanField(default=True)
+    is_superadmin   = models.BooleanField(default=False)
     is_blocked      = models.BooleanField(default=False)
+    is_bussiness    = models.BooleanField(default=False)
+    is_verified      = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']

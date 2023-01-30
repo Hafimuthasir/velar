@@ -40,7 +40,11 @@ urlpatterns = [
 
 
     path ('getUserNotFollowers/<int:id>',GetUserNotFollowers.as_view(),name='GetUserNotFollowers'),
+    path('emailvalidate',emailValidate,name='emailvalidate'),
+    path('celeryverify',celeryverify,name='celeryverify'),
+    
 
+    path('GetTestData',GetTestData,name='GetTestData'),
     path('',getRoutes,name='routes'),
     path('token', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
